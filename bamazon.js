@@ -24,7 +24,7 @@ connection.connect(function (err) {
 });
 
 
-
+//this displays all our items
 function openStore() {
   connection.query("SELECT * FROM products", function (err, res) {
     if (err) throw err;
@@ -52,8 +52,7 @@ function userPurchase() {
       name: "userAmt"
     },
 
-  ]).then(function (inquirerResponse) {
-    const data = inquirerResponse;
-    console.log(data.userChoice, data.userAmt)
+  ]).then(function (response) {
+    console.log(response.userChoice, response.userAmt)
   });
 }
