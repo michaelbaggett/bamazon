@@ -70,7 +70,7 @@ function userPurchase() {
               console.log(purchasedProduct)
             }
           }
-          if (purchasedProduct.stock_quantity > parseInt(response.userAmt)) {
+          if (purchasedProduct.stock_quantity >= parseInt(response.userAmt)) {
             connection.query(
               //in this statement set ? WHERE ? means
                   // first ? we are choosing the stock quantity to updated based upon the amount of
@@ -91,6 +91,7 @@ function userPurchase() {
           } else {
             console.log("There are not enough items in stock for a purchase that large. Please reconsider the amount of items you would like to buy.")
           };
+          openStore();
           //console.log(purchasedProduct.stock_quantity)
         });
   });
