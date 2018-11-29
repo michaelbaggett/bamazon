@@ -38,6 +38,24 @@ Product ID: ${chalk.yellow(res[i].item_id)} | Name: ${chalk.yellow(res[i].produc
   })
 };
 
+function shopAgain() {
+  inquirer.prompt([
+    {
+      type: "confirm",
+      message: "Would you like to shop again?",
+      name: "keepShopping"
+    }
+  ]).then(function(shopAgainResponse){
+    //console.log(shopAgainResponse);
+    if (shopAgainResponse.keepShopping === true) {
+      openStore();
+    } else {
+      console.log(chalk.green("Thanks for shopping, have a nice day!"))
+      connection.end();
+    }
+  })
+};
+
 //user purchase an item function
 function userPurchase() {
   inquirer.prompt([{
@@ -88,7 +106,8 @@ function userPurchase() {
           };
 
 
-          connection.end();
+          shopAgain();
+          //connection.end();
           //openStore();
           //console.log(purchasedProduct.stock_quantity)
         });
