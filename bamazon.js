@@ -20,7 +20,7 @@ connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
   openStore();
-  connection.end();
+  //connection.end();
 });
 
 
@@ -53,6 +53,41 @@ function userPurchase() {
     },
 
   ]).then(function (response) {
-    console.log(response.userChoice, response.userAmt)
+    console.log(response.userChoice, response.userAmt);
+
+    // match user chosen item w/ item ID from table
+    connection.query("SELECT * FROM products", function(err, res) {
+      if (err) throw err;
+      
+          var purchasedProduct;
+          for (var i = 0; i < res.length; i++) {
+            if (res[i].item_id === parseInt(response.userChoice)) {
+              purchasedProduct = res[i];
+              console.log(purchasedProduct)
+            }
+          }
+          if (purchasedProduct.stock_quantity > parseInt(response.userAmt)) {
+            connection.query(
+              //in this statement set ? WHERE ? means
+                  // first ? we are choosing the stock quantity to updated based upon the amount of
+                  // items the user is purchasing
+              "UPDATE products SET ? WHERE ?",
+              [
+                {
+                  stock_quantity: (purchasedProduct.stock_quantity - parseInt(response.userAmt))
+                },
+
+                // this is the 2nd ?; we are updating the stock quantity of the Specific item_ID
+                // which is the purchased product item ID from above
+                {
+                  item_id: purchasedProduct.item_id
+                }
+              ],
+            )
+          } else {
+            console.log("There are not enough items in stock for a purchase that large. Please reconsider the amount of items you would like to buy.")
+          };
+          //console.log(purchasedProduct.stock_quantity)
+        });
   });
-}
+};
