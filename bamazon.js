@@ -20,11 +20,6 @@ connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
   openStore();
-
-  //ANY TIME CONNECTION END IS RUN THE FOLLOWING ERROR IS RECEIVED:
-  // Error: Cannot enqueue Query after invoking quit.
-
-  //connection.end();
 });
 
 
@@ -91,7 +86,10 @@ function userPurchase() {
           } else {
             console.log("There are not enough items in stock for a purchase that large. Please reconsider the amount of items you would like to buy.")
           };
-          openStore();
+
+
+          connection.end();
+          //openStore();
           //console.log(purchasedProduct.stock_quantity)
         });
   });
