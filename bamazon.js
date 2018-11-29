@@ -1,6 +1,6 @@
 var mysql = require("mysql");
 const inquirer = require("inquirer");
-const chalk = require("chalk")
+const chalk = require("chalk");
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -20,6 +20,10 @@ connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
   openStore();
+
+  //ANY TIME CONNECTION END IS RUN THE FOLLOWING ERROR IS RECEIVED:
+  // Error: Cannot enqueue Query after invoking quit.
+
   //connection.end();
 });
 
@@ -32,7 +36,7 @@ function openStore() {
     for (i = 0; i < res.length; i++) {
       console.log(
         `
-Product ID: ${res[i].item_id} | Name: ${res[i].product_name} | Price: ${res[i].price} | In Stock: ${res[i].stock_quantity}
+Product ID: ${chalk.yellow(res[i].item_id)} | Name: ${chalk.yellow(res[i].product_name)} | Price: ${chalk.yellow(res[i].price)} | In Stock: ${chalk.yellow(res[i].stock_quantity)}
 `)
     }
     userPurchase();
