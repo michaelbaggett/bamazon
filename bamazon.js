@@ -18,7 +18,8 @@ var connection = mysql.createConnection({
 //connect to database & print out product table
 connection.connect(function (err) {
   if (err) throw err;
-  console.log("connected as id " + connection.threadId);
+  //console.log("connected as id " + connection.threadId);
+  console.log(chalk.yellow("Welcome to Bamazon! Take a look through out limited catalogue"));
   openStore();
 });
 
@@ -70,7 +71,8 @@ function userPurchase() {
     },
 
   ]).then(function (response) {
-    console.log(response.userChoice, response.userAmt);
+    //console.log(response.userChoice, response.userAmt);
+    var totalPrice;
 
     // match user chosen item w/ item ID from table
     connection.query("SELECT * FROM products", function(err, res) {
@@ -78,13 +80,15 @@ function userPurchase() {
       
           var purchasedProduct;
           for (var i = 0; i < res.length; i++) {
-            if (res[i].item_id === parseInt(response.userChoice)) {
+            if (res[i].item_id === parseFloat(response.userChoice)) {
               purchasedProduct = res[i];
-              console.log(purchasedProduct)
+              totalPrice = (purchasedProduct.price * response.userAmt);
+              //console.log(purchasedProduct)
             }
           }
           if (purchasedProduct.stock_quantity >= parseInt(response.userAmt)) {
             connection.query(
+              
               //in this statement set ? WHERE ? means
                   // first ? we are choosing the stock quantity to updated based upon the amount of
                   // items the user is purchasing
@@ -100,7 +104,11 @@ function userPurchase() {
                   item_id: purchasedProduct.item_id
                 }
               ],
-            )
+            );
+            console.log(
+`
+The total for your purchase is ${chalk.yellow(totalPrice)}
+`);
           } else {
             console.log("There are not enough items in stock for a purchase that large. Please reconsider the amount of items you would like to buy.")
           };
